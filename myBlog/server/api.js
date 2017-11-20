@@ -4,6 +4,7 @@ const db = require('./db')
 
 // 用户登录
 router.post('/api/login', function(req, res) {
+  console.log('hihih');
   const username = req.body.username;
   const password = req.body.password;
   db.User.find({username}, 'password', function(err, users) {

@@ -42,7 +42,8 @@ export default {
       name: '',
       addr: '',
       tips: '',
-      isChange: false
+      isChange: false,
+      timer: null
     }
   },
   created () {
@@ -74,6 +75,13 @@ export default {
       }
       else {
         this.addLink({name: this.name, addr: this.addr});
+        if(!this.timer) {
+          this.timer = setTimeout(()=>{
+            this.saveLinks(this.links);
+            clearTimeout(this.timer);
+            this.timer = null;
+          }, 5000);
+        }
         this.isShow = false;
         this.isChange = true;
       }

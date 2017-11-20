@@ -31,7 +31,7 @@
               set('username', this.name, new Date(Date.now()+60000*30), '/', window.location.hostname);
               this.$router.push({name: 'articles'});
             })
-            .catch((msg)=>{
+            .catch((msg) => {
               this.tips = msg;
             });
         }

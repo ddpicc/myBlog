@@ -20,10 +20,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 // path.resolve()将相对路径->绝对路径
-app.use('/dist', express.static(path.resolve(__dirname, '../dist')));
-app.use(api);
+app.use('/dist', express.static(path.resolve(__dirname, '../dist')))
+app.use(api)
 
-//这部分要写在404的前面，若匹配了，就不会执行下一个中间件了。参数中没有next则也不会执行下一个中间件
+// 这部分要写在404的前面，若匹配了，就不会执行下一个中间件了。参数中没有next则也不会执行下一个中间件
 app.get('*', function(req, res) {
   console.log(db.isRegistered);
   if(db.isRegistered) {

@@ -72,18 +72,19 @@ export default {
   updateLinkAddr({commit}, payload) {
     commit('UPDATE_LINKADDR', payload);
   },
-  deleteLink({commit}, payload) {
+  deleteLink ({commit}, payload) {
     commit('DELETE_LINK', payload);
   },
-  login({commit}, payload) {
+  login ({commit}, payload) {
     return Vue.http.post('/api/login', payload)
           .then((res) => {
-            if(res.data.status == 2) {
-              commit('SET_USER', payload);
-              return Promise.resolve(res.data.msg);
+            console.log('hi')
+            if (res.data.status === 2) {
+              commit('SET_USER', payload)
+              return Promise.resolve(res.data.msg)
             } else {
-              return Promise.reject(res.data.msg);
+              return Promise.reject(res.data.msg)
             }
-          });
+          })
   }
 }
