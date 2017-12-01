@@ -8,11 +8,17 @@ import Login from '../components/Login.vue'
 import EditArticle from '../components/EditArticle.vue'
 import Article from '../components/Article.vue'
 import Collection from '../components/Collection.vue'
+import NotFound from '../components/NotFound.vue'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '*',
+      name: 'notFound',
+      component: NotFound
+    },
     {
       path: '/',
       name: 'login',
