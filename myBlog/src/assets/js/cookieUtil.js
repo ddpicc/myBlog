@@ -1,5 +1,5 @@
 // 获取cookie
-function get(name){
+function get (name) {
     let cookieName = encodeURIComponent(name) + '=',
         cookieStart = document.cookie.indexOf(cookieName),
         cookieValue = null,
@@ -7,9 +7,9 @@ function get(name){
 
     if (cookieStart > -1) {
         cookieEnd = document.cookie.indexOf(';', cookieStart)
-        if (cookieEnd == -1)cookieEnd = document.cookie.length
+        if (cookieEnd === -1)cookieEnd = document.cookie.length
     }
-    cookieValue = decodeURIComponent(document.cookie.substr(cookieStart
+    cookieValue = decodeURIComponent(document.cookie.substring(cookieStart
         + cookieName.length, cookieEnd))
     return cookieValue
 }
@@ -30,5 +30,5 @@ function unset(name, path, domain, secure) {
 }
 
 export {
-    get,set,unset
+    get, set, unset
 }

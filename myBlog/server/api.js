@@ -1,11 +1,26 @@
 const express = require('express')
 const router = express.Router()
 const db = require('./db')
+const Session = require('./session')
 
 // 用户登录
 router.post('/api/login', function (req, res) {
   const username = req.body.username
   const password = req.body.password
+
+  req.session = Session.generate()
+  var writeHead = res.writeHead
+  res.writeHead = function () {
+    var cookies = res.getHeader('Set-Cookie')
+    var session = Session.serialize('session_id', req.session.id, {path: '/'})
+    cookies = Array.isArray(cookies) ? cookies.concat(session) : [cookies, session]
+    cookies = cookies.filter((val) => {
+      return val !== undefined
+    })
+    res.setHeader('Set-Cookie', cookies)
+    return writeHead.apply(this, arguments)
+  }
+
   db.User.find({username}, 'password', function (err, users) {
     if (!users.length) {
       res.send({status: 0, msg: '该用户不存在'})
@@ -100,4 +115,35 @@ router.post('/api/changeFavor', function (req, res) {
     }
   })
 })
+
+// 查看session是否合法
+router.get('/api/checkSession', function (req, res) {
+  const sessionId = req.query.sessionId
+  console.log('sessionId: ' + sessionId + '-----')
+  if (!sessionId) {
+    res.send({status: 1, msg: '不存在该用户'})
+  } else {
+    Session.getSessionById(sessionId).then((session) => {
+      session = JSON.parse(session)
+      if (session) {
+        if (session.expire > (new Date()).getTime()) {
+          // session尚未过期，更新session过期时间
+          Session.updateExpire(sessionId)
+          res.send({status: 2, msg: '存在该用户'})
+        } else {
+          // session过期
+          Session.deleteSessionById(sessionId)
+          res.send({status: 3, msg: 'session过期，重新登陆'})
+        }
+      } else {
+        // id没有对应的session
+        res.send({status: 1, msg: '不存在该用户'})
+        req.session = Session.generate()
+      }
+    }, (err) => {
+      console.log(err)
+    })
+  }
+})
+
 module.exports = router

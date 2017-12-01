@@ -25,10 +25,10 @@ var deleteSessionById = function (id) {
 }
 
 // 更新过期时间
-// TODO: 无法正常更新
 var updateExpire = function (id) {
   var expire = (new Date()).getTime() + expires
-  db.Sessions.update({id}, {id, expire}, () => {})
+  console.log(id, expire)
+  db.Sessions.update({id: id}, {id, expire}, () => {})
 }
 
 // 通过session_id获取session信息
@@ -39,7 +39,11 @@ var getSessionById = function (id) {
       if (err) {
         reject(null)
       } else {
-        resolve(JSON.stringify(sessions[0]))
+        if (sessions.length) {
+          resolve(JSON.stringify(sessions[0]))
+        } else {
+          resolve(null)
+        }
       }
     })
   })

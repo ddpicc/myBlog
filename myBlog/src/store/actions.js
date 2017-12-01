@@ -1,31 +1,36 @@
 import Vue from 'vue'
 
-const showToast = function(state, commit, payload) {
-  commit('SET_TOAST', payload);
-  commit('TOGGLE_TOAST');
-  return state.toast.promise;
+const showToast = function (state, commit, payload) {
+  commit('SET_TOAST', payload)
+  commit('TOGGLE_TOAST')
+  return state.toast.promise
 }
 
 export default {
+  checkSession: ({commit}, sessionId) => {
+    return Vue.http.get('/api/checkSession', {params: {sessionId}}).then((res) => {
+      return Promise.resolve(res.data.status)
+    })
+  },
   getArticles: ({commit}) => {
-    commit('SET_LOADING');
+    commit('SET_LOADING')
     return Vue.http.get('/api/getArticles').then((res) => {
-      console.log(res.data);
-      commit('SET_LOADING');
-      commit('SET_ARTICLES', res.data);
+      console.log(res.data)
+      commit('SET_LOADING')
+      commit('SET_ARTICLES', res.data)
     })
   },
   getLinks: ({commit}) => {
     return Vue.http.get('/api/getLinks').then((res) => {
-      console.log(res.data);
-      commit('SET_LINKS', res.data);
+      console.log(res.data)
+      commit('SET_LINKS', res.data)
     })
   },
   saveLinks: ({state, commit}, payload) => {
     return Vue.http.post('/api/saveLinks', payload).then((res) => {
-      if(res.data.status == 2) {
-        showToast(state, commit, {content: '保存成功!', isCancel: false}).then(()=>{
-          commit('TOGGLE_TOAST');
+      if (res.data.status === 2) {
+        showToast(state, commit, {content: '保存成功!', isCancel: false}).then(() => {
+          commit('TOGGLE_TOAST')
         })
       }
     })
@@ -78,7 +83,6 @@ export default {
   login ({commit}, payload) {
     return Vue.http.post('/api/login', payload)
           .then((res) => {
-            console.log('hi')
             if (res.data.status === 2) {
               commit('SET_USER', payload)
               return Promise.resolve(res.data.msg)

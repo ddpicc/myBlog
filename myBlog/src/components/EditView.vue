@@ -26,16 +26,27 @@
 </template>
 
 <script>
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapMutations, mapActions} from 'vuex'
 import {get, unset} from '../assets/js/cookieUtil'
 export default {
   name: 'editview',
   // 判断是否登录过
   created() {
     const username = get('username');
+    const sessionId = get('session_id');
     if(!username) {
       alert('尚未登录');
       this.$router.push({name: 'login'});
+    } else {
+      // 在此处判断session是否合法
+      this.checkSession(sessionId).then((status) => {
+        // console.log(sessionId);
+        console.log(status);
+        if (status === 1 || status === 3) {
+          alert('尚未登录');
+          this.$router.push({name: 'login'});
+        }
+      })
     }
   },
   data () {
@@ -45,9 +56,11 @@ export default {
   methods: {
     logoutClick: function() {
       unset('username', '/', window.location.hostname);
+      unset('session_id', '/', window.location.hostname);
       this.$router.push({name: 'login'});
     },
-    ...mapMutations(['SET_USER'])
+    ...mapMutations(['SET_USER']),
+    ...mapActions(['checkSession'])
   },
   computed: {
     getCookie: function() {
